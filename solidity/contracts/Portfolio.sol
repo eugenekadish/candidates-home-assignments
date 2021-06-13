@@ -121,12 +121,7 @@ contract Portfolio {
         require(transferFrom, "error transferring token amount to buyer");
     }
 
-    // NOTE: The method does not allow you to specify a withdrawal address, so
-    // that the tokens end up back in the wallet of the owner. Since this is an
-    // emergency and for the duration of this transaction they are in control of
-    // their keys, it seemed safer to me being less dynamic was better here.
-
-    function withdrawAll() public isOwner() {
+    function withdrawAll(address buyer) public isOwner() {
         uint256 length = tokens.length;
 
         for (uint256 i = 0; i < length; i++) {
@@ -143,7 +138,7 @@ contract Portfolio {
             // will have to remove the faulty token in a separate call to
             // `removeToken`.
 
-            bool transferFrom = tok.transferFrom(owner, owner, amount);
+            bool transferFrom = tok.transferFrom(owner, buyer, amount);
             uint256 remaining = tok.allowance(owner, address(this));
 
             if (transferFrom && remaining == 0) {

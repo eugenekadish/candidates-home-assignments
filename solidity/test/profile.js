@@ -246,7 +246,7 @@ contract('Portfolio', (accounts) => {
 
                 try {
                     withdrawAll = undefined;
-                    withdrawAll = await portfolioInstance.withdrawAll({ from: portfolioManager });
+                    withdrawAll = await portfolioInstance.withdrawAll(arbitraryAccount, { from: portfolioManager });
                 } catch (e) {
                     error = e.reason;
                 }
@@ -260,6 +260,22 @@ contract('Portfolio', (accounts) => {
                 assert.equal(portfolioManagerAllowance1.toNumber(), 0, 'portfolio mmanager allowance should be 0');
                 assert.equal(portfolioManagerAllowance2.toNumber(), 0, 'portfolio mmanager allowance should be 0');
                 assert.equal(portfolioManagerAllowance3.toNumber(), 0, 'portfolio mmanager allowance should be 0');
+
+                const portfolioManagerBalance1 = await tokenInstance1.balanceOf(portfolioManager);
+                const portfolioManagerBalance2 = await tokenInstance2.balanceOf(portfolioManager);
+                const portfolioManagerBalance3 = await tokenInstance3.balanceOf(portfolioManager);
+
+                assert.equal(portfolioManagerBalance1.toNumber(), 24, 'portfolio manager balance should be 48');
+                assert.equal(portfolioManagerBalance2.toNumber(), 38, 'portfolio manager balance should be 62');
+                assert.equal(portfolioManagerBalance3.toNumber(), 0, 'portfolio manager balance should be 0');
+
+                const arbitraryAccountBalance1 = await tokenInstance1.balanceOf(arbitraryAccount);
+                const arbitraryAccountBalance2 = await tokenInstance2.balanceOf(arbitraryAccount);
+                const arbitraryAccountBalance3 = await tokenInstance3.balanceOf(arbitraryAccount);
+
+                assert.equal(arbitraryAccountBalance1.toNumber(), 24, 'arbitrary account balance should be 24');
+                assert.equal(arbitraryAccountBalance2.toNumber(), 24, 'arbitrary account balance should be 24');
+                assert.equal(arbitraryAccountBalance3.toNumber(), 0, 'arbitrary account balance should be 0');
 
                 // Global view of the portfolio
                 // const assets = await portfolioInstance.show(/* tokenInstance3 */);
